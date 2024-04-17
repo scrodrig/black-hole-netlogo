@@ -2,7 +2,6 @@ breed [planets planet]
 breed [stars star]
 
 globals [
-  eccentricity    ; Excentricidad de las órbitas
   orbit-speed     ; Velocidad orbital de los planetas
 ]
 
@@ -14,8 +13,7 @@ planets-own [
 
 to setup
   clear-all
-  set eccentricity 0.2   ; Excentricidad de las órbitas
-  set orbit-speed 1 ; Velocidad orbital de los planetas
+  set orbit-speed 0 ; Velocidad orbital de los planetas
   
   create-planets 1 [
     set breed stars   ; Creamos solo una turtle para representar el sol y le establecemos la raza 'planets'
