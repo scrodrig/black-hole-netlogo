@@ -9,9 +9,9 @@ globals [
 
 to setup
   clear-all
-  set semimajor-axis 50  ; Ajusta la escala según tus necesidades
+  set semimajor-axis 10; Ajusta la escala según tus necesidades
   set eccentricity 0.2   ; Excentricidad de las órbitas
-  set orbit-speed 1      ; Velocidad orbital de los planetas
+  set orbit-speed 1 ;Velocidad orbital de los planetas
   
   create-planets 1 [
     set breed stars   ; Creamos solo una turtle para representar el sol y le establecemos la raza 'planets'
@@ -36,13 +36,12 @@ end
 to go
   ask planets [
     if breed = planets [
-      let distance-to-sun distance one-of planets with [self != myself] ; asegurarse de que no esté apuntando a sí mismo
-      let angle-to-sun towards one-of other planets with [self != myself]
-      let x semimajor-axis * cos angle-to-sun
-      let y (semimajor-axis * sqrt (1 - eccentricity ^ 2)) * sin angle-to-sun
-      setxy x y
-      set heading angle-to-sun
-      forward orbit-speed
+      let distance-to-sun distance one-of turtles with [breed = stars] ; distancia al sol
+      let angle-to-sun towards one-of turtles with [breed = stars] ; ángulo hacia el sol
+      let new-angle angle-to-sun + orbit-speed  ; incrementa el ángulo para moverse en círculo
+      let x semimajor-axis * cos new-angle  ; calcula la nueva posición x
+      let y semimajor-axis * sin new-angle  ; calcula la nueva posición y
+      setxy x y  ; actualiza la posición
     ]
   ]
   tick
