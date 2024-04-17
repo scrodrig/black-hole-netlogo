@@ -11,6 +11,11 @@ planets-own [
   initial-y       ; Posición inicial en y
 ]
 
+patches-own [
+  painted?  ; Variable para indicar si el parche ha sido pintado
+  paint-thickness  ; Grosor de la pintura en el parche
+]
+
 to setup
   clear-all
   set orbit-speed 0 ; Velocidad orbital de los planetas
@@ -40,18 +45,25 @@ end
 
 to go
   ask planets [
-    if breed = planets [
-      let angular-speed 0.0001  ; Velocidad angular de movimiento del planeta (ajusta según sea necesario)
-      let planet-angle (ticks * angular-speed) + random-float 360  ; Calcula el ángulo actual del planeta con una variación aleatoria
-      let x semimajor-axis * cos planet-angle  ; Calcula la nueva posición x del planeta
-      let y semimajor-axis * sin planet-angle  ; Calcula la nueva posición y del planeta
-      setxy ([xcor] of one-of turtles with [breed = stars] + x) ([ycor] of one-of turtles with [breed = stars] + y)  ; Actualiza la posición del planeta
-    ]
+    let angular-speed 0.0001  ; Velocidad angular de movimiento del planeta (ajusta según sea necesario)
+    let planet-angle (ticks * angular-speed) + random-float 360  ; Calcula el ángulo actual del planeta con una variación aleatoria
+    let x semimajor-axis * cos planet-angle  ; Calcula la nueva posición x del planeta
+    let y semimajor-axis * sin planet-angle  ; Calcula la nueva posición y del planeta
+    let new-x ([xcor] of one-of turtles with [breed = stars] + x)  ; Nueva posición x del planeta
+    let new-y ([ycor] of one-of turtles with [breed = stars] + y)  ; Nueva posición y del planeta
+    move-to patch new-x new-y  ; Mueve el planeta a su nueva posición
+    
+    ; Pintar el parche donde se encuentra el planeta si no ha sido pintado
+    let current-patch patch-here
+    if painted? = 0 [
+      ask current-patch [
+        set pcolor [color] of myself  ; Pinta el parche con el color del planeta
+        set painted? 1  ; Marca el parche como pintado
+        set paint-thickness 0.5  ; Establece el grosor de la pintura en el parche
+        set pcolor 0.5
+      ]
+    ] 
+    
   ]
   tick
 end
-
-
-
-
-
