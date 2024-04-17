@@ -38,23 +38,20 @@ to setup
   reset-ticks
 end
 
-
 to go
   ask planets [
     if breed = planets [
-      let current-angle orbit-speed * ticks  ; Calcula el ángulo actual en función del tiempo transcurrido
-      let x semimajor-axis * cos current-angle  ; calcula la nueva posición x
-      let y semimajor-axis * sin current-angle  ; calcula la nueva posición y
-      let orbit-speed-with-variation orbit-speed + (random-float 0.01 - 0.005)  ; Agrega una pequeña variación aleatoria a la velocidad orbital
-      let planet-speed orbit-speed-with-variation  ; Calcula la velocidad orbital del planeta
-      let planet-angle current-angle + random-float 360  ; Introduce una variación aleatoria en el ángulo inicial del planeta
-      let planet-x semimajor-axis * cos planet-angle  ; Calcula la nueva posición x del planeta
-      let planet-y semimajor-axis * sin planet-angle  ; Calcula la nueva posición y del planeta
-      setxy ([xcor] of one-of turtles with [breed = stars] + planet-x) ([ycor] of one-of turtles with [breed = stars] + planet-y)  ; actualiza la posición del planeta
+      let angular-speed 0.0001  ; Velocidad angular de movimiento del planeta (ajusta según sea necesario)
+      let planet-angle (ticks * angular-speed) + random-float 360  ; Calcula el ángulo actual del planeta con una variación aleatoria
+      let x semimajor-axis * cos planet-angle  ; Calcula la nueva posición x del planeta
+      let y semimajor-axis * sin planet-angle  ; Calcula la nueva posición y del planeta
+      setxy ([xcor] of one-of turtles with [breed = stars] + x) ([ycor] of one-of turtles with [breed = stars] + y)  ; Actualiza la posición del planeta
     ]
   ]
   tick
 end
+
+
 
 
 
