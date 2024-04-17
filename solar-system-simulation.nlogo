@@ -2,16 +2,20 @@ breed [planets planet]
 breed [stars star]
 
 globals [
-  semimajor-axis  ; Eje semi-mayor de la órbita de los planetas
   eccentricity    ; Excentricidad de las órbitas
   orbit-speed     ; Velocidad orbital de los planetas
 ]
 
+planets-own [
+  semimajor-axis  ; Eje semi-mayor de la órbita de los planetas
+  initial-x       ; Posición inicial en x
+  initial-y       ; Posición inicial en y
+]
+
 to setup
   clear-all
-  set semimajor-axis 10; Ajusta la escala según tus necesidades
   set eccentricity 0.2   ; Excentricidad de las órbitas
-  set orbit-speed 1 ;Velocidad orbital de los planetas
+  set orbit-speed 0.2 ; Velocidad orbital de los planetas
   
   create-planets 1 [
     set breed stars   ; Creamos solo una turtle para representar el sol y le establecemos la raza 'planets'
@@ -26,7 +30,10 @@ to setup
     set shape "circle"
     set color one-of [blue green red orange brown yellow cyan magenta]  ; Colores para los planetas
     set size 1
-    setxy random-xcor random-ycor
+    set initial-x random-xcor
+    set initial-y random-ycor
+    set semimajor-axis sqrt (initial-x ^ 2 + initial-y ^ 2)  ; Calculamos el eje semi-mayor como la distancia al origen
+    setxy initial-x initial-y
     set heading random 360
   ]
   
@@ -46,4 +53,3 @@ to go
   ]
   tick
 end
-
