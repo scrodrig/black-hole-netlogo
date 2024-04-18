@@ -47,7 +47,7 @@ to setup
     set initial-x random 141 - 70  ; Limita el rango de valores entre -70 y 70
     set initial-y random 141 - 70  ; Limita el rango de valores entre -70 y 70
     set semimajor-axis sqrt (initial-x ^ 2 + initial-y ^ 2)  ; Calculamos el eje semi-mayor como la distancia al origen
-    set mass random 10  ; Establecemos la masa del planeta como un número aleatorio entre 1 y 100
+    set mass random 120  ; Establecemos la masa del planeta como un número aleatorio entre 1 y 100
     setxy initial-x initial-y
     set heading random 360
   ]
@@ -86,11 +86,6 @@ to go
         set pcolor 0.2
       ]
     ]
-   
-    ; Actualizar la masa del sol en todos los planetas
-    ask stars [
-      set mass sun-mass
-    ]
     
     ; Actualizar la masa del sol anterior
     set previous-sun-mass sun-mass 
@@ -98,6 +93,11 @@ to go
     ; Ajustar el ángulo de la tortuga para simular un movimiento más lento
     set heading (heading + angular-speed) mod 360
   ]
+  
+   ; Actualizar la masa del sol en todos los planetas
+    ask stars [
+      set mass sun-mass
+    ]
   tick
 end
 
