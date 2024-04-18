@@ -27,7 +27,7 @@ to setup
   clear-all
   set orbit-speed 0 ; Velocidad orbital de los planetas
   set angular-speed 0.001 ; Velocidad angular de movimiento del planeta (ajustar según sea necesario)
-  set sun-mass 25
+  set sun-mass 100
   set previous-sun-mass sun-mass
   
   create-planets 1 [
@@ -47,9 +47,10 @@ to setup
     set initial-x random 141 - 70  ; Limita el rango de valores entre -70 y 70
     set initial-y random 141 - 70  ; Limita el rango de valores entre -70 y 70
     set semimajor-axis sqrt (initial-x ^ 2 + initial-y ^ 2)  ; Calculamos el eje semi-mayor como la distancia al origen
-    set mass random 120  ; Establecemos la masa del planeta como un número aleatorio entre 1 y 100
+    set mass random 100  ; Establecemos la masa del planeta como un número aleatorio entre 1 y 100
     setxy initial-x initial-y
     set heading random 360
+;    set label mass
   ]
   
   reset-ticks
@@ -66,7 +67,9 @@ to go
     let delta-mass (sun-mass - previous-sun-mass) ;ex: 1
     
     ; Calcular la deformación de la órbita en función del cambio en la masa del sol
-    let orbit-deformation (sun-mass - mass) / 10  ; Puedes ajustar este factor según sea necesario ex: 0.1
+    ;let orbit-deformation (sun-mass - mass) / 10  ; Puedes ajustar este factor según sea necesario ex: 0.1
+    let orbit-deformation ( mass - [mass] of one-of stars ) / 100
+    set label orbit-deformation
     
     ; Calcular el nuevo eje semi-mayor de la órbita
     let new-semimajor-axis semimajor-axis + orbit-deformation ; ex: 15 + 0.1
@@ -86,6 +89,8 @@ to go
         set pcolor 0.2
       ]
     ]
+   
+   
     
     ; Actualizar la masa del sol anterior
     set previous-sun-mass sun-mass 
