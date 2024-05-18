@@ -56,57 +56,99 @@ to setup
   reset-ticks
 end
 
+to detect-collisions
+  ask planets [
+    let min-distance min [distance myself] of stars
+    if min-distance < ([size] of one-of stars / 2) [ ; Comprobar si hay colisión con alguna estrella (considerando el radio)
+      ask one-of stars [ ; Agregar la masa del planeta al sol antes de que el planeta muera
+        set mass mass + [mass] of myself
+      ]
+      set color black  ; Cambiar el color del planeta a negro
+      die
+    ]
+  ]
+end
+
+
+
+
 to go
+  detect-collisions  ; Detect collisions before planets move
+
   ask planets [
     let planet-angle heading
 
-    ; Calcular la distancia entre el planeta y el sol
+    ; Calculate distance between planet and sun
     let distance-to-star distance one-of stars
 
-    ; Calcular el cambio en la masa del sol
-    let delta-mass (sun-mass - previous-sun-mass) ;ex: 1
+    ; Calculate change in sun's mass
+    let delta-mass (sun-mass - previous-sun-mass)
 
-    ; Calcular la deformación de la órbita en función del cambio en la masa del sol
-    ;let orbit-deformation (sun-mass - mass) / 10  ; Puedes ajustar este factor según sea necesario ex: 0.1
+    ; Calculate orbit deformation based on change in sun's mass
     let orbit-deformation ( mass - [mass] of one-of stars ) / 100
-    set label mass
+;    set label mass
 
-    ; Calcular el nuevo eje semi-mayor de la órbita
-    let new-semimajor-axis semimajor-axis + orbit-deformation ; ex: 15 + 0.1
+    ; Calculate new semi-major axis of orbit
+    let new-semimajor-axis semimajor-axis + orbit-deformation
 
-    let x new-semimajor-axis * cos planet-angle  ; Calcula la nueva posición x del planeta
-    let y new-semimajor-axis * sin planet-angle  ; Calcula la nueva posición y del planeta
+    let x new-semimajor-axis * cos planet-angle  ; Calculate new x position of the planet
+    let y new-semimajor-axis * sin planet-angle  ; Calculate new y position of the planet
 
-    ; Mueve el planeta a su nueva posición
+    ; Move the planet to its new position
     setxy ([xcor] of one-of turtles with [breed = stars] + x) ([ycor] of one-of turtles with [breed = stars] + y)
 
-    ; Pintar el parche donde se encuentra el planeta si no ha sido pintado
+    ; Paint the patch where the planet is located if not painted yet
     let current-patch patch-here
     if painted? = 0 [
       ask current-patch [
-        set pcolor [color] of myself  ; Pinta el parche con el color del planeta
-        set painted? 1  ; Marca el parche como pintado
+        set pcolor [color] of myself  ; Paint the patch with the planet's color
+        set painted? 1  ; Mark the patch as painted
         set pcolor 0.2
       ]
     ]
 
+    ; Increase size of stars if sun's mass increases
     if sun-mass > previous-sun-mass [
       ask stars [
         set size [size] of one-of stars + (0.1)
       ]
     ]
 
-
-    ; Actualizar la masa del sol anterior
+    ; Update previous sun mass
     set previous-sun-mass sun-mass
 
-    ; Ajustar el ángulo de la tortuga para simular un movimiento más lento
+    ; Adjust turtle's angle to simulate slower movement
     set heading (heading + angular-speed) mod 360
   ]
 
-   ; Actualizar la masa del sol en todos los planetas
-    ask stars [
-      set mass sun-mass
+  ; Change sun's color based on its mass
+  if sun-mass > 2000 and sun-mass <= 3500 [
+    ask one-of stars [
+      set color orange
     ]
+  ]
+
+  if sun-mass > 3500 and sun-mass <= 5000 [
+    ask one-of stars [
+      set color red
+    ]
+  ]
+
+  if sun-mass > 6500 [
+    ask one-of stars [
+      set color black
+      set size 10  ; Ajusta el tamaño para simular el borde
+      set pen-mode "down" ; Asegura que el borde esté visible
+      set pen-size 5  ; Ajusta el grosor del borde
+;      set pen-color orange  ; Establece el color del borde en naranja
+    ]
+  ]
+
+  ; Update sun's mass in all planets
+  ask stars [
+    set mass sun-mass
+  ]
   tick
 end
+
+
