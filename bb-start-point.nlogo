@@ -1,5 +1,6 @@
 breed [planets planet]
 breed [stars star]
+breed [particles particle]
 
 globals [
   orbit-speed     ; Velocidad orbital de los planetas
@@ -51,6 +52,13 @@ to setup
     setxy initial-x initial-y
     set heading random 360
 ;    set label mass
+  ]
+  
+  create-particles 0 [ ; Create particles breed
+    set shape "circle"
+    set size 0.5
+    set color yellow ; Set initial color of particles
+    set hidden? true ; Initially hide particles
   ]
 
   reset-ticks
@@ -142,6 +150,12 @@ to go
       set pen-size 5  ; Ajusta el grosor del borde
 ;      set pen-color orange  ; Establece el color del borde en naranja
     ]
+    create-explosion  ; Create explosion effect
+  ]
+  
+    ; Check if sun mass exceeds 10000
+  if sun-mass >= 8000 [
+    create-explosion  ; Create explosion effect
   ]
 
   ; Update sun's mass in all planets
@@ -149,6 +163,23 @@ to go
     set mass sun-mass
   ]
   tick
+end
+
+to create-explosion
+  ask one-of stars [
+    let explosion-radius 5 ; Adjust the radius of explosion
+    ask patches in-radius explosion-radius [
+      ; Set particle color for nearby patches
+      set pcolor yellow + 1 + random 14 ; Randomize particle color
+    ]
+  ]
+end
+
+to fade-particles
+  ask patches with [pcolor >= yellow + 1] [
+    ; Decrease particle color to simulate fading effect
+    set pcolor pcolor - 1
+  ]
 end
 
 
